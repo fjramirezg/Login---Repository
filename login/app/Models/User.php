@@ -19,13 +19,6 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
-        'first_name',
-        'last_name',
-        'phone_number',
-        'date_of_birth',
-        'profile_image',
-        'status',
-        'last_login',
     ];
 
     /**
@@ -35,7 +28,6 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
     /**
@@ -43,9 +35,6 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'date_of_birth' => 'date',
-        'last_login' => 'datetime',
-    ];
+    protected $casts = [];
+    public $timestamps = false;
 }
