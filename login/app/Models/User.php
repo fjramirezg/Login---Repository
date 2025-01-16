@@ -7,10 +7,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * Class User
+ *
+ * Representa un usuario en la aplicación.
+ *
+ * @package App\Models
+ */
 class User extends Authenticatable
 {
-    use HasFactory, HasApiTokens;
+    use HasFactory, Notifiable;
 
+    /**
+     * Los atributos que se pueden asignar masivamente.
+     *
+     * @var array<string>
+     */
     protected $fillable = [
         'username',
         'email',
@@ -23,10 +35,11 @@ class User extends Authenticatable
         'status',
         'last_login',
     ];
+
     /**
-     * The attributes that should be hidden for serialization.
+     * Los atributos que deben ser ocultados para la serialización.
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected $hidden = [
         'password',
@@ -34,7 +47,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Obtiene los atributos que deben ser convertidos a tipos específicos.
      *
      * @return array<string, string>
      */

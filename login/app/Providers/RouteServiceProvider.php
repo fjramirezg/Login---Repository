@@ -1,11 +1,18 @@
 <?php
 
-
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * Class RouteServiceProvider
+ *
+ * Proveedor de servicios para la configuración de rutas de la aplicación.
+ * Se encarga de registrar las rutas y aplicar middleware según sea necesario.
+ *
+ * @package App\Providers
+ */
 class RouteServiceProvider extends ServiceProvider
 {
     /**
@@ -17,6 +24,8 @@ class RouteServiceProvider extends ServiceProvider
 
     /**
      * Realiza el registro de las rutas para la aplicación.
+     *
+     * Este método se encarga de cargar las rutas definidas en los archivos correspondientes.
      *
      * @return void
      */
@@ -40,6 +49,8 @@ class RouteServiceProvider extends ServiceProvider
 
     /**
      * Configura las limitaciones de tasa para las rutas de la aplicación.
+     *
+     * Este método define la cantidad máxima de solicitudes permitidas por minuto para las rutas API.
      *
      * @return void
      */

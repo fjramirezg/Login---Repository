@@ -8,9 +8,22 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * Class AuthController
+ *
+ * Controlador para la autenticación de usuarios, incluyendo registro,
+ * inicio de sesión y cierre de sesión.
+ *
+ * @package App\Http\Controllers
+ */
 class AuthController extends Controller
 {
-    // Registro de usuario
+    /**
+     * Registra un nuevo usuario.
+     *
+     * @param Request $request La solicitud HTTP que contiene los datos del usuario.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el resultado del registro.
+     */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -32,7 +45,12 @@ class AuthController extends Controller
         return response()->json(['message' => 'User registered successfully'], 201);
     }
 
-    // Login de usuario
+    /**
+     * Inicia sesión un usuario existente.
+     *
+     * @param Request $request La solicitud HTTP que contiene las credenciales del usuario.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el token de acceso o error.
+     */
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -56,7 +74,12 @@ class AuthController extends Controller
         return response()->json(['token' => $token]);
     }
 
-    // Logout
+    /**
+     * Cierra sesión al usuario autenticado.
+     *
+     * @param Request $request La solicitud HTTP que contiene la información del usuario.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON confirmando el cierre de sesión.
+     */
     public function logout(Request $request)
     {
         $request->user()->tokens->each(function ($token) {
@@ -66,5 +89,3 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logged out successfully']);
     }
 }
-
-

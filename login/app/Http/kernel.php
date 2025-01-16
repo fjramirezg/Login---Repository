@@ -1,16 +1,23 @@
 <?php
 
-
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
+/**
+ * Class Kernel
+ *
+ * Clase que gestiona el middleware HTTP de la aplicación.
+ * Define los middleware globales, grupos de middleware y middleware de ruta.
+ *
+ * @package App\Http
+ */
 class Kernel extends HttpKernel
 {
     /**
-     * The application's global HTTP middleware stack.
+     * El stack global de middleware HTTP de la aplicación.
      *
-     * These middleware are run during every request to your application.
+     * Estos middleware se ejecutan durante cada solicitud a la aplicación.
      *
      * @var array
      */
@@ -24,7 +31,7 @@ class Kernel extends HttpKernel
         // Middleware para validar la longitud del contenido enviado por el cliente
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
 
-        // Middleware para manejar la validación del POST size
+        // Middleware para manejar la validación del tamaño del POST
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
 
         // Middleware para convertir las respuestas a objetos HTTP
@@ -35,7 +42,7 @@ class Kernel extends HttpKernel
     ];
 
     /**
-     * The application's route middleware groups.
+     * Los grupos de middleware de rutas de la aplicación.
      *
      * @var array
      */
@@ -58,9 +65,9 @@ class Kernel extends HttpKernel
     ];
 
     /**
-     * The application's route middleware.
+     * El middleware de ruta de la aplicación.
      *
-     * These middleware may be assigned to groups or used individually.
+     * Estos middleware pueden ser asignados a grupos o utilizados individualmente.
      *
      * @var array
      */
@@ -74,19 +81,19 @@ class Kernel extends HttpKernel
         // Middleware para manejar autorizaciones
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
 
-        // Middleware para limitar la tasa de solicitudes
+        // Middleware para redirigir si el usuario está autenticado
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
 
         // Middleware para verificar contraseñas
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
 
-        // Middleware para manejar la cacheo de respuestas
+        // Middleware para manejar la validación de firmas en URLs
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
 
-        // Middleware para verificar si una solicitud ha expirado
+        // Middleware para limitar la tasa de solicitudes
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
-        // Middleware para verificar si un usuario está autenticado
+        // Middleware para verificar si un usuario está autenticado y su email está verificado
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
 }
