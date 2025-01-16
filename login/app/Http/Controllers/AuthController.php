@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Laravel\Sanctum\HasApiTokens;
 
 /**
  * Class AuthController
@@ -30,6 +29,11 @@ class AuthController extends Controller
             'username' => 'required|string|unique:users|max:50',
             'email' => 'required|email|unique:users|max:100',
             'password' => 'required|string|min:8',
+            'first_name' => 'nullable|string|max:50',
+            'last_name' => 'nullable|string|max:50',
+            'phone_number' => 'nullable|string|max:20',
+            'date_of_birth' => 'nullable|date',
+            'profile_image' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -40,6 +44,13 @@ class AuthController extends Controller
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'phone_number' => $request->phone_number,
+            'date_of_birth' => $request->date_of_birth,
+            'profile_image' => $request->profile_image,
+            'status' => 'active', // Estado predeterminado
+            'last_login' => null,
         ]);
 
         return response()->json(['message' => 'User registered successfully'], 201);
@@ -68,10 +79,21 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
+        // Validar si el usuario está activo
+        if ($user->status !== 'active') {
+            return response()->json(['message' => 'Account is not active'], 403);
+        }
+
+        // Actualizar último inicio de sesión
+        $user->update(['last_login' => now()]);
+
         // Crear token
         $token = $user->createToken('MyApp')->plainTextToken;
 
-        return response()->json(['token' => $token]);
+        return response()->json([
+            'token' => $token,
+            'user' => $user,
+        ]);
     }
 
     /**
@@ -82,9 +104,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $request->user()->tokens->each(function ($token) {
-            $token->delete();
-        });
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Logged out successfully']);
     }

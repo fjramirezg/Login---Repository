@@ -95,5 +95,8 @@ class Kernel extends HttpKernel
 
         // Middleware para verificar si un usuario está autenticado y su email está verificado
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+
+        // Middleware para verificar el estado del usuario
+        'check.status' => \App\Http\Middleware\CheckUserStatus::class,
     ];
 }

@@ -2,54 +2,49 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
- *
- * Clase UserFactory
- *
- * Esta clase se utiliza para generar instancias de la clase User
- * con datos de prueba para facilitar las pruebas y el desarrollo.
- */
 class UserFactory extends Factory
 {
     /**
-     * La contraseña actual utilizada por la fábrica.
+     * El nombre del modelo asociado al factory.
      *
-     * @var string|null
+     * @var string
      */
-    protected static ?string $password;
+    protected $model = User::class;
 
     /**
-     * Define el estado predeterminado del modelo.
+     * Define el estado por defecto del modelo.
      *
-     * Este método genera un conjunto de atributos por defecto para el modelo User.
-     *
-     * @return array<string, mixed>
+     * @return array
      */
-    public function definition(): array
+    public function definition()
     {
         return [
-            'name' => fake()->name(),  // Genera un nombre aleatorio
-            'email' => fake()->unique()->safeEmail(),  // Genera un email único y seguro
-            'email_verified_at' => now(),  // Marca la fecha y hora actual como verificada
-            'password' => static::$password ??= Hash::make('password'),  // Establece la contraseña, asegurándose de que sea la misma en todas las instancias
-            'remember_token' => Str::random(10),  // Genera un token aleatorio para recordar la sesión
+            'username' => $this->faker->unique()->userName(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'password' => bcrypt('password'), // Contraseña predeterminada
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
+            'phone_number' => $this->faker->optional()->phoneNumber(),
+            'date_of_birth' => $this->faker->optional()->date('Y-m-d', '2005-01-01'),
+            'profile_image' => $this->faker->optional()->imageUrl(),
+            'status' => $this->faker->randomElement(['active', 'inactive', 'suspended']),
+            'last_login' => null, // Último inicio de sesión comienza como null
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 
     /**
-     * Indica que la dirección de correo electrónico del modelo debe estar sin verificar.
-     *
-     * @return static
+     * Estado personalizado para usuarios activos.
      */
-    public function unverified(): static
+    public function active()
     {
         return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,  // Establece el campo de verificación de email como nulo
+            'status' => 'active',
         ]);
     }
 }
