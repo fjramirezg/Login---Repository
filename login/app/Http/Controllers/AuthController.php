@@ -5,16 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-/**
- * Class AuthController
- *
- * Controlador para la autenticación de usuarios, incluyendo registro,
- * inicio de sesión y cierre de sesión.
- *
- * @package App\Http\Controllers
- */
 class AuthController extends Controller
 {
     /**
@@ -29,11 +22,6 @@ class AuthController extends Controller
             'username' => 'required|string|unique:users|max:50',
             'email' => 'required|email|unique:users|max:100',
             'password' => 'required|string|min:8',
-            'first_name' => 'nullable|string|max:50',
-            'last_name' => 'nullable|string|max:50',
-            'phone_number' => 'nullable|string|max:20',
-            'date_of_birth' => 'nullable|date',
-            'profile_image' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -43,14 +31,7 @@ class AuthController extends Controller
         $user = User::create([
             'username' => $request->username,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'phone_number' => $request->phone_number,
-            'date_of_birth' => $request->date_of_birth,
-            'profile_image' => $request->profile_image,
-            'status' => 'active', // Estado predeterminado
-            'last_login' => null,
+            'password' => Hash::make($request->password)
         ]);
 
         return response()->json(['message' => 'User registered successfully'], 201);
@@ -80,12 +61,12 @@ class AuthController extends Controller
         }
 
         // Validar si el usuario está activo
-        if ($user->status !== 'active') {
-            return response()->json(['message' => 'Account is not active'], 403);
-        }
+        // if ($user->status !== 'active') {
+        //     return response()->json(['message' => 'Account is not active'], 403);
+        // }
 
         // Actualizar último inicio de sesión
-        $user->update(['last_login' => now()]);
+        // $user->update(['last_login' => now()]);
 
         // Crear token
         $token = $user->createToken('MyApp')->plainTextToken;

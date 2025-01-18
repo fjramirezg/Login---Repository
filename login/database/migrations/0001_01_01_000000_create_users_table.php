@@ -4,45 +4,26 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateUsersTable extends Migration
+return new class extends Migration
 {
     /**
-     * Ejecuta las migraciones.
-     *
-     * @return void
+     * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('username', 50)->unique();
-            $table->string('first_name', 50)->nullable();
-            $table->string('last_name', 50)->nullable();
-            $table->string('phone_number', 20)->nullable();
-            $table->date('date_of_birth')->nullable();
-            $table->string('profile_image', 255)->nullable();
-            $table->enum('status', ['active', 'inactive', 'suspended'])->default('active');
-            $table->timestamp('last_login')->nullable();
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('password');
         });
     }
 
     /**
-     * Revierte las migraciones.
-     *
-     * @return void
+     * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn([
-                'username',
-                'first_name',
-                'last_name',
-                'phone_number',
-                'date_of_birth',
-                'profile_image',
-                'status',
-                'last_login',
-            ]);
-        });
+        Schema::dropIfExists('users');
     }
-}
+};
