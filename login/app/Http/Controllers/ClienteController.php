@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Integration\Database\Post;
-use App\Models\cliente;
-use App\Models\User;
+use App\Models\ClienteMod;
+use App\Models\UserMod;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -15,10 +15,10 @@ class ClienteController
 
     public function index()
     {
-        return cliente::all();
+        return ClienteMod::all();
     }
 
-      public function store(Request $request)
+    public function store(Request $request)
       {
           $validator = Validator::make($request->all(), [
               'user_id' => 'required|exists:users,id',
@@ -32,7 +32,7 @@ class ClienteController
               return response()->json($validator->errors(), 422);
           }
 
-          $user = cliente::create([
+          $user = ClienteMod::create([
               'user_id' => $request ->user_id,
               'name' => $request->name,
               'email' => $request->email,
@@ -40,16 +40,14 @@ class ClienteController
               'address' => $request ->address
           ]);
 
-          return response()->json(['message' => 'cliente registrado satisfactoriamente'], 201);
+          return response()->json(['message' => 'clienteMod registrado satisfactoriamente'], 201);
       }
-
-
 
     public function show(string $user_id)
     {
         try {
-            $cliente = cliente::findOrFail($user_id);
-            return response()->json($cliente);
+            $Cliente = ClienteMod::findOrFail($user_id);
+            return response()->json($Cliente);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Cliente no encontrado'], 404);
         }
@@ -64,11 +62,11 @@ class ClienteController
                 'name' => 'required|string',
                 'email' => 'required|email|unique:clientes,email',
                 'phone' => 'required|string',
-                'address'=> 'required|string',
+                'address'=> 'nullable|string',
             ]);
 
-            // Buscar el cliente
-            $cliente = cliente::findOrFail($user_id);
+            // Buscar el clienteMod
+            $cliente = ClienteMod::findOrFail($user_id);
 
             // Actualizar los datos
             $cliente->update([
@@ -82,28 +80,23 @@ class ClienteController
             // Retornar respuesta
             return response()->json([
                 'message' => 'Cliente actualizado con éxito',
-                'cliente' => $cliente
+                'clienteMod' => $cliente
             ], 200);
 
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Cliente no encontrado'], 404);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al actualizar cliente'], 500);
+            return response()->json(['message' => 'Error al actualizar clienteMod'], 500);
         }
     }
-
-
-
-
-
 
     public function destroy(string $user_id)
     {
         try {
-            // Buscar el cliente
-            $cliente = cliente::findOrFail($user_id);
+            // Buscar el clienteMod
+            $cliente = ClienteMod::findOrFail($user_id);
 
-            // Eliminar el cliente
+            // Eliminar el clienteMod
             $cliente->delete();
 
             // Retornar respuesta
@@ -117,7 +110,7 @@ class ClienteController
             ], 404);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Error al eliminar el cliente'
+                'message' => 'Error al eliminar el clienteMod'
             ], 500);
         }
     }

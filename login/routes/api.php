@@ -16,6 +16,13 @@ Route::resource('clients', ClienteController::class) ->only([
 
 );
 
+Route::resource('users', AuthController::class) ->only([
+        'index', 'store', 'show',  'update', 'destroy'
+    ]
+
+);
+
+
 
 // Cierre de sesión (protegido por Sanctum)
 Route::middleware('auth:sanctum')->group(function () {
