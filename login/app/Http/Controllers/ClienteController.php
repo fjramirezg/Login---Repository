@@ -4,71 +4,122 @@ namespace App\Http\Controllers;
 
 use App\Integration\Database\Post;
 use App\Models\cliente;
+use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class ClienteController
 {
 
     public function index()
     {
-        return response()->json(Post::all());
+        return cliente::all();
     }
 
-    public function create()
-    {
-        return response()->json(['message' => 'Método no utilizado en API'], 200);
-    }
+      public function store(Request $request)
+      {
+          $validator = Validator::make($request->all(), [
+              'user_id' => 'required|exists:users,id',
+              'name' => 'required|string',
+              'email' => 'required|email|unique:clientes,email',
+              'phone' => 'required|string',
+              'address'=> 'required|string',
+          ]);
 
-    public function store(Request $request)
+          if ($validator->fails()) {
+              return response()->json($validator->errors(), 422);
+          }
+
+          $user = cliente::create([
+              'user_id' => $request ->user_id,
+              'name' => $request->name,
+              'email' => $request->email,
+              'phone' => $request->phone,
+              'address' => $request ->address
+          ]);
+
+          return response()->json(['message' => 'cliente registrado satisfactoriamente'], 201);
+      }
+
+
+
+    public function show(string $user_id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
-            'phone' => 'required|integer|max:255',
-            'address' => 'required|string|max:255',
-        ]);
-        $cliente = cliente::create($request->all());
-        return response()->json($cliente, 201);
-    }
-    public function show(string $id)
-    {
-        $client = cliente::find($id);
-        if (!$client) {
+        try {
+            $cliente = cliente::findOrFail($user_id);
+            return response()->json($cliente);
+        } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Cliente no encontrado'], 404);
         }
-
-        return response()->json($client, 200);
     }
-    public function edit(string $id)
-    {
-        return response()->json(['message' => 'Método no utilizado en API'], 200);
 
-    }
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $user_id)
     {
-        $client = cliente::find($id);
-        if (!$client) {
+        try {
+            // Validación de datos
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+                'name' => 'required|string',
+                'email' => 'required|email|unique:clientes,email',
+                'phone' => 'required|string',
+                'address'=> 'required|string',
+            ]);
+
+            // Buscar el cliente
+            $cliente = cliente::findOrFail($user_id);
+
+            // Actualizar los datos
+            $cliente->update([
+                'user_id' => $request ->user_id,
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request ->address
+            ]);
+
+            // Retornar respuesta
+            return response()->json([
+                'message' => 'Cliente actualizado con éxito',
+                'cliente' => $cliente
+            ], 200);
+
+        } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Cliente no encontrado'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error al actualizar cliente'], 500);
         }
-
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
-            'phone' => 'required|integer|max:255',
-            'address' => 'required|string|max:255',
-        ]);
-        $client->update($request->all());
-        return response()->json($client, 200);
     }
-    public function destroy(string $id)
-    {
-        $client = cliente::find($id);
-        if (!$client) {
-            return response()->json(['message' => 'Cliente no encontrado'], 404);
-        }
 
-        $client->delete();
-        return response()->json(['message' => 'Cliente eliminado'], 200);
+
+
+
+
+
+    public function destroy(string $user_id)
+    {
+        try {
+            // Buscar el cliente
+            $cliente = cliente::findOrFail($user_id);
+
+            // Eliminar el cliente
+            $cliente->delete();
+
+            // Retornar respuesta
+            return response()->json([
+                'message' => 'Cliente eliminado con éxito'
+            ], 200);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Cliente no encontrado'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al eliminar el cliente'
+            ], 500);
+        }
     }
 
 }

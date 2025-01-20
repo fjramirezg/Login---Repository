@@ -6,12 +6,15 @@ use App\Http\Controllers\AuthController;
 
 
 //// Registro de usuario
-//Route::post('register', [AuthController::class, 'register']);
-//
-//// Inicio de sesión
-//Route::post('login', [AuthController::class, 'login']);
 
-Route::resource('clients', ClienteController::class);
+Route::post('register', [AuthController::class, 'register']);
+
+
+Route::resource('clients', ClienteController::class) ->only([
+    'index', 'store', 'show',  'update', 'destroy'
+    ]
+
+);
 
 
 // Cierre de sesión (protegido por Sanctum)

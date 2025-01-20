@@ -60,15 +60,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        // Validar si el usuario está activo
-        // if ($user->status !== 'active') {
-        //     return response()->json(['message' => 'Account is not active'], 403);
-        // }
 
-        // Actualizar último inicio de sesión
-        // $user->update(['last_login' => now()]);
-
-        // Crear token
         $token = $user->createToken('MyApp')->plainTextToken;
 
         return response()->json([

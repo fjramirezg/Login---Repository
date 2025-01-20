@@ -12,5 +12,9 @@ class cliente extends Model
     /**
      * Los atributos que se pueden asignar de forma masiva.
      */
-    protected $fillable = ['name', 'email', 'phone','address'];
+    protected $fillable = ['user_id','name', 'email', 'phone','address'];
+
+
+
+
 }
