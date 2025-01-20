@@ -7,25 +7,22 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Ejecuta las migraciones.
-     *
-     * @return void
+     * Run the migrations.
      */
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['name']);
-            $table->string('username')->unique();
+            $table->timestamps();
         });
     }
 
     /**
-     * Revierte las migraciones.
-     *
-     * @return void
+     * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {});
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropTimestamps();
+        });
     }
 };
