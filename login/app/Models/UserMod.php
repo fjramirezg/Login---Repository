@@ -11,12 +11,11 @@ class UserMod extends Authenticatable
     use HasApiTokens, Notifiable;
 
 
-    protected $fillable = ['user_id', 'name', 'email', 'password', ];
+    protected $fillable = ['name', 'email', 'password'];
     protected $hidden = ['password',];
 
 
     protected $casts = [];
-    public $timestamps = false;
-
-
+    // public $timestamps = false;
+    protected $table = 'users';
 }

@@ -10,19 +10,18 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-
-    public function index()
-    {
-        return UserMod::all();
-    }
-
-    public function store(Request $request)
+    /**
+     * Registra un nuevo usuario.
+     *
+     * @param Request $request La solicitud HTTP que contiene los datos del usuario.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el resultado del registro.
+     */
+    public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:User,user_id',
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string'
+            'username' => 'required|string|unique:users|max:50',
+            'email' => 'required|email|unique:users|max:100',
+            'password' => 'required|string|min:8',
         ]);
 
         if ($validator->fails()) {
@@ -30,86 +29,56 @@ class AuthController extends Controller
         }
 
         $user = UserMod::create([
-            'user_id' => $request ->user_id,
-            'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);
 
-        return response()->json(['message' => 'Usuario registrado satisfactoriamente'], 201);
+        return response()->json(['message' => 'User registered successfully'], 201);
     }
 
-   public function show(string $user_id)
+    /**
+     * Inicia sesión un usuario existente.
+     *
+     * @param Request $request La solicitud HTTP que contiene las credenciales del usuario.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON con el token de acceso o error.
+     */
+    public function login(Request $request)
     {
-        try {
-            $Usuario = usuario::findOrFail($user_id);
-            return response()->json($Usuario);
-        } catch (ModelNotFoundException $e) {
-           return response()->json(['message' => 'Usuario no encontrado'], 404);
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
         }
+
+        $user = UserMod::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
+        }
+
+
+        $token = $user->createToken('MyApp')->plainTextToken;
+
+        return response()->json([
+            'token' => $token,
+            'user' => $user,
+        ]);
     }
 
-    public function update(Request $request, string $user_id)
+    /**
+     * Cierra sesión al usuario autenticado.
+     *
+     * @param Request $request La solicitud HTTP que contiene la información del usuario.
+     * @return \Illuminate\Http\JsonResponse Respuesta JSON confirmando el cierre de sesión.
+     */
+    public function logout(Request $request)
     {
-        try {
-            // Validación de datos
-            $request->validate([
-                'user_id' => 'required|exists:users_id',
-                'name' => 'required|string',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|string'
+        $request->user()->currentAccessToken()->delete();
 
-            ]);
-
-            // Buscar el clienteMod
-            $usuario = UserMod::findOrFail($user_id);
-
-            // Actualizar los datos
-            $usuario->update([
-                'user_id' => $request ->user_id,
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password)
-
-            ]);
-
-            // Retornar respuesta
-            return response()->json([
-                'message' => 'Usuario actualizado con éxito',
-                'usuario' => $usuario
-            ], 200);
-
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Usuario no encontrado'], 404);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Usuario al actualizar clienteMod'], 500);
-        }
+        return response()->json(['message' => 'Logged out successfully']);
     }
-
-   public function destroy(string $user_id)
-   {
-       try {
-           // Buscar el clienteMod
-           $usuario = UserMod::findOrFail($user_id);
-
-           // Eliminar el clienteMod
-           $usuario->delete();
-
-           // Retornar respuesta
-           return response()->json([
-               'message' => 'Cliente eliminado con éxito'
-           ], 200);
-
-       } catch (ModelNotFoundException $e) {
-           return response()->json([
-               'message' => 'Cliente no encontrado'
-           ], 404);
-       } catch (\Exception $e) {
-           return response()->json([
-               'message' => 'Error al eliminar el clienteMod'
-           ], 500);
-       }
-   }
-
-
 }
