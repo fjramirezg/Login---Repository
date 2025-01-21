@@ -2,21 +2,23 @@
 
 namespace Database\Seeders;
 
-use App\Models\UserMod;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
+
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Ejecuta la semilla para la tabla `users`.
-     *
-     * @return void
-     */
-    public function run()
+
+    public function run(): void
     {
-        // Crear usuarios con diferentes estados
-        UserMod::factory()->count(10)->active()->create(); // 10 usuarios activos
-        UserMod::factory()->count(5)->create(['status' => 'inactive']); // 5 usuarios inactivos
-        UserMod::factory()->count(5)->create(['status' => 'suspended']); // 5 usuarios suspendidos
+        DB::table('users')->insert([
+            'username' => Str::random(10),
+            'email' => Str::random(10).'@example.com',
+            'password' => Hash::make('password'),
+        ]);
     }
 }
