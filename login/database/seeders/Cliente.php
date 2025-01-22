@@ -4,8 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Faker\Factory as Faker;
 
 class Cliente extends Seeder
 {
@@ -14,16 +13,32 @@ class Cliente extends Seeder
      */
     public function run(): void
     {
-        DB::table('clientes')->insert([
-            'user_id' => rand(1, 1000),
-            'name' => Str::random(10),
-            'email' => Str::random(10) . '@example.com',
-            'phone' => Str::random(10),
-            'address' => Str::random(10),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        $faker = Faker::create();
 
+        // Obtener todos los IDs de usuarios existentes para asignarlos a clientes
+        $userIds = DB::table('users')->pluck('id')->toArray();
+
+        // Verificar que existan usuarios para asignar
+        if (empty($userIds)) {
+            $this->command->info('No hay usuarios disponibles. Por favor, ejecuta el seeder de usuarios primero.');
+            return;
+        }
+
+        // Definir la cantidad de clientes a crear
+        $cantidad = 50;
+
+        for ($i = 0; $i < $cantidad; $i++) {
+            DB::table('clientes')->insert([
+                'user_id'    => $faker->randomElement($userIds),
+                'name'       => $faker->name,
+                'email'      => $faker->unique()->safeEmail,
+                'phone'      => $faker->phoneNumber,
+                'address'    => $faker->address,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        $this->command->info("$cantidad clientes han sido creados exitosamente.");
     }
-
 }
