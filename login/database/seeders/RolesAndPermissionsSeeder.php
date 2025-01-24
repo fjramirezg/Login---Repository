@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Auth\Access\Gate;
 use Illuminate\Database\Seeder;
-use App\Models\UserMod; // Importa el modelo correcto
+use App\Models\UserMod;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -14,28 +15,16 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     public function run(): void
     {
-        // Resetear cache de permisos
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        //Crea los Roles
+        $role1 = Role::create(['name' => 'Admin']);
+        $role2 = Role::create(['name' => 'User']);
 
-        // Crear permisos generales
-        Permission::create(['name' => 'manage users']);
-        Permission::create(['name' => 'edit articles']);
-        Permission::create(['name' => 'delete articles']);
-        // Añade más permisos según tus necesidades
+        //Asigna Rol a ID 1
+        $user1 = UserMod::find(1);
+        $user1->assignRole($role1->id);
 
-        // Crear rol de Super Admin
-        $superAdminRole = Role::create(['name' => 'super-admin']);
-
-        // Asignar todos los permisos al Super Admin
-        $superAdminRole->givePermissionTo(Permission::all());
-
-        // Asignar rol de super-admin a un usuario específico
-        $user = UserMod::where('email', 'superadmin@tuapp.com')->first();
-
-        if ($user) {
-            $user->assignRole('super-admin');
-        } else {
-            $this->command->error('Usuario con email superadmin@tuapp.com no encontrado.');
-        }
+        //Asigna Rol a ID 2
+        $user2 = UserMod::find(2);
+        $user2->assignRole($role2->id);
     }
 }

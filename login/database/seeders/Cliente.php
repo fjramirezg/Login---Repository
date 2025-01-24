@@ -8,14 +8,11 @@ use Faker\Factory as Faker;
 
 class Cliente extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    
     public function run(): void
     {
         $faker = Faker::create();
 
-        // Obtener todos los IDs de usuarios existentes para asignarlos a clientes
         $userIds = DB::table('users')->pluck('id')->toArray();
 
         // Verificar que existan usuarios para asignar

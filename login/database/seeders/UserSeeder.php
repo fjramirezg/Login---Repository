@@ -15,10 +15,17 @@ class UserSeeder extends Seeder
 
     public function run(): void
     {
-        DB::table('users')->insert([
+        $cantidad = 2;
+
+        for ($i = 0; $i < $cantidad; $i++) {
+         DB::table('users')->insert([
             'username' => Str::random(10),
             'email' => Str::random(10).'@example.com',
             'password' => Hash::make('password'),
+             'created_at' => now(),
+             'updated_at' => now(),
         ]);
+        }
+        $this->command->info("$cantidad Usuarios han sido creados exitosamente.");
     }
 }

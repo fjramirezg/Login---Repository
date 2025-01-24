@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class UserMod extends Authenticatable
-{
-    use HasApiTokens, Notifiable;
 
+{
+    use HasApiTokens, HasRoles, Notifiable;
 
     protected $fillable = ['name', 'email', 'password'];
     protected $hidden = ['password',];
-
 
     protected $casts = [];
     // public $timestamps = false;
