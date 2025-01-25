@@ -22,8 +22,8 @@ class UserSeeder extends Seeder
             'username' => Str::random(10),
             'email' => Str::random(10).'@example.com',
             'password' => Hash::make('password'),
-             'created_at' => now(),
-             'updated_at' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
         }
         $this->command->info("$cantidad Usuarios han sido creados exitosamente.");

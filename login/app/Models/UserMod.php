@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Seeders\Cliente;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -15,7 +16,14 @@ class UserMod extends Authenticatable
     protected $fillable = ['name', 'email', 'password'];
     protected $hidden = ['password',];
 
+    // Relacion HasMany - 1 Usuario Tiene muchos clientes.
+    public function clients(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Cliente::class, 'user_id');
+    }
+
     protected $casts = [];
+
     // public $timestamps = false;
     protected $table = 'users';
 }
