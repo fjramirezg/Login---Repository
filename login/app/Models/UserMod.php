@@ -19,7 +19,7 @@ class UserMod extends Authenticatable
     // Relacion HasMany - 1 Usuario Tiene muchos clientes.
     public function clients(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Cliente::class, 'user_id');
+        return $this->hasMany(ClienteMod::class, 'user_id');
     }
 
     protected $casts = [];

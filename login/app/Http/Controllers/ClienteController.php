@@ -40,7 +40,7 @@ class ClienteController
               'address' => $request ->address
           ]);
 
-          return response()->json(['message' => 'clienteMod registrado satisfactoriamente'], 201);
+          return response()->json(['message' => 'cliente registrado satisfactoriamente'], 201);
       }
 
     public function show(string $user_id)
