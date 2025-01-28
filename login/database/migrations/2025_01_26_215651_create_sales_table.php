@@ -4,41 +4,34 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
-
-    public function up()
+return new class extends Migration
+{
+    public function up():void
     {
         Schema::create('sales', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->unsignedBigInteger('cliente_id');
             $table->unsignedBigInteger('vendedor_id');
             $table->decimal('total', 10, 2)->default(0.00);
             $table->boolean('aprobada')->default(false);
-            $table->timestamps(); // created_at, updated_at
+            $table->timestamps();
 
-            // Clave foránea a clientes (uno a muchos)
+            // FK a clientes con ON DELETE RESTRICT
             $table->foreign('cliente_id')
                 ->references('id')
                 ->on('clientes')
-                ->onDelete('restrict');
+                ->restrictOnDelete();
 
-            // Clave foránea a users  (uno a muchos)
+            // FK a users con ON DELETE RESTRICT (vendedor_id)
             $table->foreign('vendedor_id')
                 ->references('id')
                 ->on('users')
-                ->onDelete('restrict');
-
-            //payments
-
-            //details sale
-
-
+                ->restrictOnDelete();
         });
     }
 
-    public function down()
+    public function down():void
     {
         Schema::dropIfExists('sales');
     }
-
 };
