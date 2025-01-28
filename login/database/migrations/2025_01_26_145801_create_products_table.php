@@ -10,13 +10,12 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('category_id')->nullable();//categories_id
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->string('nombre', 100);
             $table->decimal('precio', 10, 2);
             $table->integer('cantidad')->default(0);
             $table->timestamps();
 
-            // FK a categories con ON DELETE SET NULL
             $table->foreign('category_id')
                 ->references('id')
                 ->on('categories')
