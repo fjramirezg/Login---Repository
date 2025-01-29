@@ -21,12 +21,12 @@ class Sale extends Model
 
     public function cliente(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Cliente::class, 'cliente_id');
+        return $this->belongsTo(ClienteMod::class, 'cliente_id');
     }
 
     public function vendedor(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(User::class, 'vendedor_id');
+        return $this->belongsTo(UserMod::class, 'vendedor_id');
     }
 
     public function payments(): \Illuminate\Database\Eloquent\Relations\HasMany

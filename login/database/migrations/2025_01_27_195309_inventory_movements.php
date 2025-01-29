@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up():void
+    public function up(): void
     {
         Schema::create('inventory_movements', function (Blueprint $table) {
             $table->bigIncrements('id');
@@ -24,7 +24,7 @@ return new class extends Migration
         });
     }
 
-    public function down():void
+    public function down(): void
     {
         Schema::dropIfExists('inventory_movements');
     }

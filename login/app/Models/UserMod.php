@@ -21,6 +21,10 @@ class UserMod extends Authenticatable
     {
         return $this->hasMany(ClienteMod::class, 'user_id');
     }
+    public function sales(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Sale::class, 'vendedor_id');
+    }
 
     protected $casts = [];
 

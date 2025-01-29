@@ -9,7 +9,7 @@ class ClienteMod extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id','name', 'email', 'phone','address'];
+    protected $fillable = ['user_id', 'name', 'email', 'phone', 'address'];
     protected $table = 'clientes';
 
 
@@ -18,8 +18,8 @@ class ClienteMod extends Model
     {
         return $this->belongsTo(UserMod::class, 'user_id');
     }
-
-
-
-
+    public function sales(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Sale::class, 'cliente_id');
+    }
 }

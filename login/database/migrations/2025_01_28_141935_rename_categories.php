@@ -8,14 +8,14 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->renameColumn('categories_id', 'category_id');
+            // $table->renameColumn('categories_id', 'category_id');
         });
     }
 
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->renameColumn('category_id', 'categories_id');
+            // $table->renameColumn('category_id', 'categories_id');
         });
     }
 };
