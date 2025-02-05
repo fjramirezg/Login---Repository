@@ -13,7 +13,7 @@ class UserMod extends Authenticatable
 {
     use HasApiTokens, HasRoles, Notifiable;
 
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['username', 'email', 'password'];
     protected $hidden = ['password',];
 
     // Relacion HasMany - 1 Usuario Tiene muchos clientes.
