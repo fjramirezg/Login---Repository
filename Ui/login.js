@@ -1,4 +1,3 @@
-
 document.getElementById('login-form').addEventListener('submit', async function(e) {
     e.preventDefault();
 
@@ -20,12 +19,13 @@ document.getElementById('login-form').addEventListener('submit', async function(
         const data = await response.json();
 
         if (response.ok) {
-
-           // Si la autenticación fue exitosa -  Redirigir al usuario a la página de usuarios
+            localStorage.setItem('token', data.token);
+            
+            localStorage.setItem('user', JSON.stringify(data.user));
+            
             window.location.href = 'index.html';
                            
         } else {
-            // Si hay un error de autenticación
             console.error('Error de login:', data);
             alert(data.message || 'Error al iniciar sesión');
         }

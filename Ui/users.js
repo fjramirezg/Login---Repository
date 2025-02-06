@@ -1,9 +1,19 @@
 document.addEventListener("DOMContentLoaded", function() {
-  if (!sessionStorage.getItem('auth')) {
-    window.location.href = 'index.html';
-    return; 
-}
-    fetchClients();
+  const auth = localStorage.getItem('auth');
+  console.log('Valor de auth en localStorage:', auth);
+
+//    if (!auth) {
+//      window.location.href = 'login.html';
+//       return; 
+//     }
+
+  console.log('Sesión válida. Cargando clientes...');
+  fetchClients();
+});
+
+document.getElementById('search-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  searchClient(e);
 });
 
 function fetchClients(name = "") {
@@ -12,8 +22,12 @@ function fetchClients(name = "") {
     url += `?name=${encodeURIComponent(name)}`;
   }
   console.log("Consultando clientes en:", url);
-
-  fetch(url)
+  fetch(url, {
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('auth')}`
+    }
+  })
     .then(response => response.json())
     .then(data => {
       console.log("Datos de clientes:", data);
@@ -36,7 +50,12 @@ function fetchClients(name = "") {
 }
 
 function viewClient(id) {
-  fetch(`http://localhost:8000/api/clients/${id}`)
+  fetch(`http://localhost:8000/api/clients/${id}`, {
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('auth')}`
+    }
+  })
     .then(response => response.json())
     .then(client => {
       alert(`ID: ${client.id}\nNombre: ${client.name}\nEmail: ${client.email}`);
@@ -46,7 +65,8 @@ function viewClient(id) {
     });
 }
 
-function searchClient() {
-  const name = document.getElementById("search-input").value.trim();
+function searchClient(event) {
+  event.preventDefault();
+  const name = document.getElementById("name").value.trim();
   fetchClients(name);
 }
