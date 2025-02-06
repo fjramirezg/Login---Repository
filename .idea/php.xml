@@ -134,6 +134,7 @@
       <path value="$PROJECT_DIR$/login/vendor/phpunit/php-code-coverage" />
       <path value="$PROJECT_DIR$/login/vendor/phpunit/phpunit" />
       <path value="$PROJECT_DIR$/login/vendor/laravel/sanctum" />
+      <path value="$PROJECT_DIR$/login/vendor/spatie/laravel-permission" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />

@@ -20,13 +20,10 @@ document.getElementById('login-form').addEventListener('submit', async function(
         const data = await response.json();
 
         if (response.ok) {
-            // Si la autenticación fue exitosa
-            console.log('Login exitoso:', data);
-       
-        
-            // Redirigir al usuario a la página de usuarios
-            window.location.href = '/Ui/users.html';
-            
+
+           // Si la autenticación fue exitosa -  Redirigir al usuario a la página de usuarios
+            window.location.href = 'index.html';
+                           
         } else {
             // Si hay un error de autenticación
             console.error('Error de login:', data);

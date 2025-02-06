@@ -120,6 +120,7 @@
       <excludeFolder url="file://$MODULE_DIR$/login/vendor/voku/portable-ascii" />
       <excludeFolder url="file://$MODULE_DIR$/login/vendor/webmozart/assert" />
       <excludeFolder url="file://$MODULE_DIR$/login/vendor/laravel/sanctum" />
+      <excludeFolder url="file://$MODULE_DIR$/login/vendor/spatie/laravel-permission" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

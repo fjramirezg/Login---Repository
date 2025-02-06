@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function() {
 function fetchClients(name = "") {
   let url = "http://localhost:8000/api/clients";
   if (name) {
-    // Se añade el parámetro de búsqueda a la URL (asumiendo que el endpoint lo soporta)
     url += `?name=${encodeURIComponent(name)}`;
   }
   console.log("Consultando clientes en:", url);
@@ -19,7 +18,7 @@ function fetchClients(name = "") {
     .then(data => {
       console.log("Datos de clientes:", data);
       const clientTable = document.getElementById("client-table");
-      clientTable.innerHTML = "";  // Limpia la tabla antes de agregar nuevos datos
+      clientTable.innerHTML = ""; 
       
       data.forEach(client => {
         let row = `<tr>
@@ -37,7 +36,6 @@ function fetchClients(name = "") {
 }
 
 function viewClient(id) {
-  // Obtiene los detalles de un cliente en particular usando la ruta GET api/clients/{client}
   fetch(`http://localhost:8000/api/clients/${id}`)
     .then(response => response.json())
     .then(client => {
