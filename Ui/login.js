@@ -19,9 +19,9 @@ document.getElementById('login-form').addEventListener('submit', async function(
         const data = await response.json();
 
         if (response.ok) {
-            localStorage.setItem('token', data.token);
-            
-            localStorage.setItem('user', JSON.stringify(data.user));
+
+            localStorage.setItem('token', data.token);            
+            localStorage.setItem('users', JSON.stringify(data.user));
             
             window.location.href = 'index.html';
                            

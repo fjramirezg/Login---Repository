@@ -13,14 +13,10 @@
         <div class="form-clientes-box">
             <h2 class="title">Clientes</h2>
 
-            <form id="search-form" method="POST">
-                <input type="hidden" name="id" id="id" value="">
-
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
-
-                <button type="submit">Buscar</button>
-            </form>
+<form id="search-form">
+    <input type="text" id="name" placeholder="Buscar cliente por nombre">
+    <button type="submit">Buscar</button>
+</form>
 
             <h3>Lista de Clientes</h3>
             <table>
@@ -29,6 +25,8 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>Email</th>
+                        <th>Phone</th>
+                        <th>Address</th>
                         <th>Accion</th>
 
                     </tr>

@@ -9,7 +9,7 @@ class ClienteMod extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['usecdr_id', 'name', 'email', 'phone', 'address'];
+    protected $fillable = ['user_id', 'name', 'email', 'phone', 'address'];
     protected $table = 'clientes';
 
 
