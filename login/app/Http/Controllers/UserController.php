@@ -18,10 +18,11 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:User,user_id',
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string'
+            'password' => 'required|string',
+            'role' => 'required|string|in:admin,user'
+
         ]);
 
         if ($validator->fails()) {
@@ -29,11 +30,12 @@ class UserController extends Controller
         }
 
         $user = UserMod::create([
-            'user_id' => $request->user_id,
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
         ]);
+
+        $user->syncRoles([$request->role]);
 
         return response()->json(['message' => 'Usuario registrado satisfactoriamente'], 201);
     }
@@ -53,10 +55,9 @@ class UserController extends Controller
         try {
             // Validación de datos
             $request->validate([
-                'user_id' => 'required|exists:users_id',
                 'name' => 'required|string',
                 'email' => 'required|email|unique:users,email',
-                'password' => 'required|string'
+                'password' => 'required|string',
 
             ]);
 
@@ -65,12 +66,13 @@ class UserController extends Controller
 
             // Actualizar los datos
             $usuario->update([
-                'user_id' => $request->user_id,
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
 
             ]);
+
+            $usuario->syncRoles([$request->role]);
 
             // Retornar respuesta
             return response()->json([

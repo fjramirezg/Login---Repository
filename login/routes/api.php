@@ -5,20 +5,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 
+
 // Rutas de autenticación (sin protección)
 Route::post('login', [AuthController::class, 'login']);
 
-// Rutas protegidas por Sanctum
+// Rutas protegidas por Sanctum -- token.
 Route::middleware('auth:sanctum')->group(function () {
 
-        // Ruta de registro (solo admin)
-        Route::post('register', [AuthController::class, 'register'])->middleware('role:admin');
+    // Ruta de logout
+    Route::post('logout', [AuthController::class, 'logout']);
 
-        // Ruta de logout
-        Route::post('logout', [AuthController::class, 'logout']);
-
-        // Rutas para clientes
-        Route::group(['prefix' => 'clients'], function () {
+    // Rutas para clientes
+    Route::group(['prefix' => 'clients'], function () {
 
         // Rutas accesibles para admin y user
         Route::get('/', [ClienteController::class, 'index']);
@@ -27,11 +25,37 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Rutas solo para admin
         Route::middleware('role:admin')->group(function () {
-        Route::put('/{client}', [ClienteController::class, 'update']);
-        Route::delete('/{client}', [ClienteController::class, 'destroy']);
+            Route::put('/{client}', [ClienteController::class, 'update']);
+            Route::delete('/{client}', [ClienteController::class, 'destroy']);
         });
-        });
-
-        // Rutas para usuarios
-        Route::resource('users', UserController::class)->middleware('role:admin');
     });
+
+//    Rutas para usuarios
+    Route::resource('users', UserController::class)->middleware('role:admin');
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

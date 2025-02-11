@@ -75,6 +75,7 @@ class ClienteController
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'address' => $request ->address
+
             ]);
 
             // Retornar respuesta

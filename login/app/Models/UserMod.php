@@ -17,6 +17,7 @@ class UserMod extends Authenticatable
     protected $hidden = ['password',];
 
     // Relacion HasMany - 1 Usuario Tiene muchos clientes.
+
     public function clients(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ClienteMod::class, 'user_id');
