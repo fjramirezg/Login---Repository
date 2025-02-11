@@ -58,6 +58,7 @@ class UserController extends Controller
                 'name' => 'required|string',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string',
+                'role' => 'required|string|in:admin,user'
 
             ]);
 

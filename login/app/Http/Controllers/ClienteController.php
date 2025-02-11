@@ -19,29 +19,29 @@ class ClienteController
     }
 
     public function store(Request $request)
-      {
-          $validator = Validator::make($request->all(), [
-              'user_id' => 'required|exists:users,id',
-              'name' => 'required|string',
-              'email' => 'required|email|unique:clientes,email',
-              'phone' => 'required|string',
-              'address'=> 'required|string',
-          ]);
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'name' => 'required|string',
+            'email' => 'required|email|unique:clientes,email',
+            'phone' => 'required|string',
+            'address'=> 'required|string',
+        ]);
 
-          if ($validator->fails()) {
-              return response()->json($validator->errors(), 422);
-          }
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
 
-          $user = ClienteMod::create([
-              'user_id' => $request ->user_id,
-              'name' => $request->name,
-              'email' => $request->email,
-              'phone' => $request->phone,
-              'address' => $request ->address
-          ]);
+        $user = ClienteMod::create([
+            'user_id' => $request ->user_id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request ->address
+        ]);
 
-          return response()->json(['message' => 'cliente registrado satisfactoriamente'], 201);
-      }
+        return response()->json(['message' => 'cliente registrado satisfactoriamente'], 201);
+    }
 
     public function show(string $user_id)
     {
