@@ -27,18 +27,121 @@ body {
     color: var(--gray-color);
 }
 
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bgc-ligth-white);
+    padding: 0.5rem 1rem;
+    box-shadow: 0 2px 4px var(--bx-shadow-dark);
+    position: relative;
+    z-index: 2;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.user-name {
+    margin-left: 0.5rem;
+    font-weight: bold;
+    color: var(--gray-color);
+}
+
+/* Sidebar */
+.sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: var(--bgc-light);
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidebar a {
+    padding: 8px 10px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: var(--light_gray);
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar a:hover {
+    color: #f1f1f1;
+}
+
+.sidebar .dropdown-btn {
+    font-size: 25px;
+    background: none;
+    color: #818181;
+    border: none;
+    text-align: left;
+    width: 100%;
+    padding: 8px 32px;
+    cursor: pointer;
+}
+
+.sidebar .dropdown-container {
+    display: none;
+    background-color: #262626;
+    padding-left: 20px;
+}
+
+.closebtn {
+    font-size: 36px;
+    margin-left: 50px;
+    border: none;
+    background: none;
+    color: #818181;
+    cursor: pointer;
+}
+
+/* Menú de hamburguesa (Icono) */
+.menu-toggle {
+    font-size: 30px;
+    background-color: var(--bgc_green);
+    color: var(--white-color);
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.3s;
+    border: none;
+}
+
+.menu-toggle:hover {
+    background-color: #444;
+}
 
 /* Estilos del Contenido Principal (Main) */
 main {
     padding: 20px;
     display: flex;
-    flex-direction: column; /* Cambio principal */
-    gap: 2rem; /* Espacio entre las tablas */
+    flex-direction: column;
+    gap: 2rem;
     align-items: center;
     min-height: 100vh;
     padding-bottom: 2rem;
 }
 
+/* Formulario Clientes */
 .form-clientes-box,
 .form-clientes-users {
     background-color: var(--bgc-ligth-white);
@@ -47,54 +150,8 @@ main {
     box-shadow: 0 4px 8px var(--bx-shadow-dark);
     max-width: 800px;
     width: 100%;
-    margin: 0; 
+    margin: 0;
 }
-
-.title {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    color: var(--gray-color);
-}
-
-h3 {
-    text-align: left;
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    color: var(--gray-color);
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid var(--light_gray2);
-}
-
-th {
-    background-color: var(--bgc_green);
-    color: var(--white-color);
-}
-
-tr:hover {
-    background-color: var(--bgc_hoover_ligth_gray);
-    cursor: pointer;
-    color: var(--white-color);
-}
-
-tr:nth-child(even) {
-    background-color: var(--bgc-light);
-}
-
-tr:hover:nth-child(even) {
-    background-color: var(--bgc_hoover_ligth_gray);
-}
-
 
 .title {
     text-align: center;

@@ -6,15 +6,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Manage Clients</title>
     <link rel="stylesheet" href="css/index.css">
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
 
 <body>
 
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="navbar-left">
+            <div id="menu-toggle" class="menu-toggle" onclick="openNav()">&#9776;</div>
+        </div>
+        <div class="navbar-right">
+            <img
+                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAhCAYAAABX5MJvAAAAAXNSR0IArs4c6QAABE1JREFUWEeVmFmoV0Ucxz8/ssgiIyWutkILgkm4FUXYQkRFgVjQgxX4FKYg5taLoURlRd1e6hYEbRDRgxAWtxUttIfQNurBRETT3EpTsjIKp/ObM+ecmd+Zc+51Xv5zZ37zW7+/5VxBlwDO78JeEFx6FF+H/Wh+YtYt+nCpP9nl7yOiRMeW5hkWvW9T+lKJlrrd+kfKjRMYcHA+cFzggINfa592scicy6nQgtwBbg5wJ3BJxv6/gU8Ehh28CxzrC0Hs6e5wNDe3IzyFkxkNeOJnOfM4gpO14F4ETmTcXTPoxEQI0xgcrwEPVi96gdbSy1NvC57b1Ym/GICGaDzwAXD9CDbnQGXlHQXuEdhYAjw1JfJEcnE68BlwY+KzKkWadN3m4FPgKmA2oO+61p/AdcCPlmdXON4G5vUw1KvNArMjvRYBGv92sjWM9gDTQI7E2MqlqCJ/eBSoXg48H9FdAPzSjfK6cLyJY74NsVX9B2DqCF5Qe18F91BEdwvChrrMNiFLj4STOJkiuJ/iAhjLUwx80YeDiPgwsKDAzQZgSnG+BrjVKp/PJhkCt6iKmw3HC8CSVImajabpX8C9wN3AuAzQTwJfCqxzwnoc3xchO6fiFym0H7iwalA2OxQ4F2U8cZyyPJ8Id2cUwm4Droks31eA7j3gUHT2lq8xeXdopnylWIiVmCC430wWVvx+B54G3jBCMtDxEjVV54IsA3dtB74WAi8bJbhSYHuHEhWf/4pc/wh4HXgf+NcImA4yH9z9wIRcUYr4r0J4UlEb14lZwJaRsiLy7DyBd4zS/s+GprefP4ewwioxWUAroFlxQJP9A+C0qMUr2JXzZ6yQ3z9eAHO1VeJcgaO5QcYWliDi5iadawH7cDKp1WlbwPQHDwOveM+Z+38ARX57pYSHQCaCC/rUSgzieKQrpKZZzi2zKckO//Rz4KZMitqjQWBZONSquQ7Q4jWzqCFbGyXa3TIK1ETgYIWh8MYPtwtcSBvbYJIoC7NwfA2cRznSLRYYCjQ7gMtLdGbwVB6psVrmvRjbRc8GfgZ0lqiVM6P4Ti/Eu9EtLGbMl0xHXV081BLet3REXF9LyBQzLdtavrvWY8AT4XIzcEPYXwzsLRVkR9sTNbtvQtgSM21NOS0MNIp+v4yiM4Bvi4J1KRCPbI8Czwby7cAV9q3AHw60Hum9UaJts4ZDBTUTdRNjHdXWAmOLozURVr4rGtzK4vwZYHqmXyjpXcCHPeNdy+KrETbiZPyoJ+x+HGg2DVZhsl94ffOYxnlYYGoyoOa7Yv0JaYCs3yL3haG5lpXkTS+/0rKzBFY5fBE6MweSLOfyrWaAYkXH/gQFbU/kOdew9A+EARxLBeY4YbId4yIJ2vY/BoZANjXCOmtGWie6vJIJ9WVhDh0Iw44OPQeA3aET64RlVrfPy96RbzCZfxn0Iy+b0CYVsx8/p2B97h8Zo9HKwqEu1ZXx/wP402E1gYVUYgAAAABJRU5ErkJggg==" />
+            <span class="user-name">Name</span>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <button class="closebtn" onclick="closeNav()">&times;</button>
+        <a href="javascript:void(0)" class="dropdown-btn" onclick="toggleDropdown()">Clientes</a>
+        <div class="dropdown-container">
+            <a href="#">Ver Clientes</a>
+        </div>
+        <a href="javascript:void(0)" class="dropdown-btn" onclick="toggleDropdown()">Usuarios</a>
+        <div class="dropdown-container">
+            <a href="#">Ver Usuarios</a>
+        </div>
+    </div>
 
     <!-- Tabla Clientes -->
     <main>
-
         <div class="form-clientes-box">
             <h2 class="title">Clientes</h2>
             <form id="search-form-clientes">
@@ -37,7 +60,6 @@
             </table>
         </div>
 
-
         <!-- Tabla Usuarios -->
         <div class="form-clientes-users">
             <h2 class="title">Usuarios</h2>
@@ -52,20 +74,18 @@
                         <th>Username</th>
                         <th>Email</th>
                         <th>Accion</th>
-
                     </tr>
                 </thead>
-               <tbody id="user-table"> </tbody>
+                <tbody id="user-table"> </tbody>
             </table>
         </div>
-
-
-
     </main>
 
+    <!-- Scripts -->
     <script src="Js/clientes.js"></script>
     <script src="Js/users.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="Js/sidebar.js"></script>
 
 </body>
 
