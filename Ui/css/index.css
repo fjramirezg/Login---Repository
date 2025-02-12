@@ -32,30 +32,22 @@ body {
 main {
     padding: 20px;
     display: flex;
-    justify-content: center; /* Centra el contenido horizontalmente */
-    align-items: center; /* Centra el contenido verticalmente */
-    height: calc(100vh - 60px); /* Asegura que el contenido se centre en toda la pantalla */
+    flex-direction: column; /* Cambio principal */
+    gap: 2rem; /* Espacio entre las tablas */
+    align-items: center;
+    min-height: 100vh;
+    padding-bottom: 2rem;
 }
 
-/* Estilos para Formularios y Elementos de la Interfaz */
-.form-clientes-box {
-    background-color: var(--bgc-ligth-white);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px var(--bx-shadow-dark);
-    max-width: 800px;
-    width: 100%; /* Hace que ocupe todo el espacio disponible hasta el máximo */
-    margin: 0 auto;
-}
-/* Estilos para Formularios y Elementos de la Interfaz */
+.form-clientes-box,
 .form-clientes-users {
     background-color: var(--bgc-ligth-white);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px var(--bx-shadow-dark);
     max-width: 800px;
-    width: 100%; /* Hace que ocupe todo el espacio disponible hasta el máximo */
-    margin: 0 auto;
+    width: 100%;
+    margin: 0; 
 }
 
 .title {

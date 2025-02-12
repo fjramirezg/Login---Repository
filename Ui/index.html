@@ -6,19 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Manage Clients</title>
     <link rel="stylesheet" href="css/index.css">
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
 
 <body>
 
 
-    <!-- Clientes -->
+    <!-- Tabla Clientes -->
     <main>
 
         <div class="form-clientes-box">
             <h2 class="title">Clientes</h2>
-            <form id="search-form">
-                <input type="text" id="name" placeholder="Buscar cliente por nombre">
-                <button type="submit">Buscar</button>
+            <form id="search-form-clientes">
+                <input type="text" id="name-clientes" placeholder="Buscar cliente por nombre">
+                <button type="submit-clientes">Buscar</button>
             </form>
             <h3>Lista de Clientes</h3>
             <table>
@@ -37,12 +38,12 @@
         </div>
 
 
-        <!-- Usuarios -->
+        <!-- Tabla Usuarios -->
         <div class="form-clientes-users">
             <h2 class="title">Usuarios</h2>
             <form id="search-form-users">
-                <input type="text" id="nameU" placeholder="Buscar usuario  por nombre">
-                <button type="submit">Buscar</button>
+                <input type="text" id="name-users" placeholder="Buscar usuario  por nombre">
+                <button type="submit-usuarios">Buscar</button>
             </form>
             <h3>Lista de Usuarios</h3>
             <table>
@@ -54,7 +55,7 @@
 
                     </tr>
                 </thead>
-                <tbody id="user-table"> </tbody>
+               <tbody id="user-table"> </tbody>
             </table>
         </div>
 
@@ -62,10 +63,9 @@
 
     </main>
 
-    <!-- Javascript personalizado -->
-    <script src="clientes.js"></script>
-    <script src="users.js"></script>
-
+    <script src="Js/clientes.js"></script>
+    <script src="Js/users.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>
 

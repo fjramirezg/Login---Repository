@@ -1,0 +1,187 @@
+document.addEventListener("DOMContentLoaded", function() { 
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    window.location.href = 'login.html';
+    return; 
+  }
+  console.log('Sesión válida. Cargando Usuarios...');
+  fetchUsers(); 
+});
+
+document.getElementById('search-form-users').addEventListener('submit-usuarios', function(e) {
+  e.preventDefault(); 
+  searchUsers();  
+});
+
+// Función para obtener y mostrar los usuarios
+function fetchUsers(name = "") {
+  let url = "http://localhost:8000/api/users";
+  if (name) {
+    url += `?name=${encodeURIComponent(name)}`;
+  }
+  console.log("Consultando usuarios en:", url);
+  
+  fetch(url, {
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}` 
+    }
+  })
+    .then(response => response.json()) 
+    .then(data => {
+      const userTable = document.getElementById("user-table");
+      userTable.innerHTML = ""; 
+      
+      if (Array.isArray(data) && data.length > 0) {
+        console.log("Datos de Usuarios:", data);
+        
+        data.forEach(user => {
+          let row = `<tr>
+            <td>${user.username}</td>
+            <td>${user.email}</td>
+            <td>
+              <button onclick="viewUsers(${user.id})">Ver</button>
+              <button onclick="editUser(${user.id})">Editar</button>
+              <button onclick="deleteUser(${user.id})">Eliminar</button>
+            </td>
+          </tr>`;
+          userTable.innerHTML += row;
+        });
+      } else {
+        console.log("No se encontraron usuarios.");
+        alert(`No se encontraron usuarios con el nombre: ${name}`);
+      }
+    })
+    .catch(error => {
+      console.error("Error al obtener los usuarios:", error);
+      alert("Error al obtener los usuarios. Intenta nuevamente.");
+    });
+}
+
+// Función para buscar usuarios según el nombre ingresado
+function searchUsers() {
+  const username = document.getElementById("name-users").value.trim();
+  if (!username) {
+    alert("Por favor, ingresa un nombre para buscar.");
+    return;
+  }
+  fetchUsers(username);
+}
+
+// Función para ver detalles del usuario (utilizando SweetAlert2)
+function viewUsers(id) {
+  fetch(`http://localhost:8000/api/users/${id}`, {
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}` 
+    }
+  })
+    .then(response => response.json()) 
+    .then(data => {
+      console.log("Detalles del usuario:", data);
+      Swal.fire({
+        title: 'Detalles del Usuario',
+        html: `<p><strong>Username:</strong> ${data.username}</p>
+               <p><strong>Email:</strong> ${data.email}</p>`,
+        icon: 'info'
+      });
+    })
+    .catch(error => {
+      console.error("Error al obtener los detalles del usuario:", error);
+      Swal.fire('Error', 'Error al obtener los detalles del usuario.', 'error');
+    });
+}
+
+// Función para editar el usuario utilizando SweetAlert2
+function editUser(id) {
+  fetch(`http://localhost:8000/api/users/${id}`, {
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}` 
+    }
+  })
+  .then(response => response.json()) 
+  .then(user => {
+    Swal.fire({
+      title: 'Editar Usuario',
+      html: `
+        <input id="swal-input1" class="swal2-input" placeholder="Username" value="${user.username}">
+        <input id="swal-input2" class="swal2-input" placeholder="Email" value="${user.email}">
+      `,
+      focusConfirm: false,
+      showCancelButton: true, 
+      preConfirm: () => {
+        return {
+          username: document.getElementById('swal-input1').value,
+          email: document.getElementById('swal-input2').value
+        }
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const updatedData = result.value;
+        fetch(`http://localhost:8000/api/users/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}` 
+          },
+          body: JSON.stringify(updatedData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          Swal.fire('Actualizado!', 'El usuario ha sido actualizado.', 'success');
+          fetchUsers(); 
+        })
+        .catch(error => {
+          console.error('Error al actualizar el usuario:', error);
+          Swal.fire('Error', 'No se pudo actualizar el usuario.', 'error');
+        });
+      }
+    });
+  })
+  .catch(error => {
+    console.error("Error al obtener el usuario para editar:", error);
+    Swal.fire('Error', 'No se pudo obtener el usuario.', 'error');
+  });
+}
+
+// Función para eliminar un usuario utilizando SweetAlert2
+function deleteUser(id) {
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: "Esta acción no se puede revertir.",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Sí, eliminarlo!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch(`http://localhost:8000/api/users/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}` 
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          Swal.fire(
+            'Eliminado!',
+            'El usuario ha sido eliminado.',
+            'success'
+          );
+          fetchUsers();
+        } else {
+          throw new Error('Error en la eliminación');
+        }
+      })
+      .catch(error => {
+        console.error('Error al eliminar el usuario:', error);
+        Swal.fire('Error', 'No se pudo eliminar el usuario.', 'error');
+      });
+    }
+  });
+}
