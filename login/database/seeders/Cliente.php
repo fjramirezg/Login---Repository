@@ -8,7 +8,7 @@ use Faker\Factory as Faker;
 
 class Cliente extends Seeder
 {
-    
+
     public function run(): void
     {
         $faker = Faker::create();
@@ -22,7 +22,7 @@ class Cliente extends Seeder
         }
 
         // Definir la cantidad de clientes a crear
-        $cantidad = 50;
+        $cantidad = 10;
 
         for ($i = 0; $i < $cantidad; $i++) {
             DB::table('clientes')->insert([

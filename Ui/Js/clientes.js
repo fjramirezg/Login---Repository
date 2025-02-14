@@ -48,6 +48,8 @@ function fetchClients(name = "") {
               <button onclick="viewClient(${client.id})">Ver</button>
               <button onclick="editClient(${client.id})">Editar</button>
               <button onclick="deleteClient(${client.id})">Eliminar</button>
+              <button onclick="createClient()">Crear Cliente</button>
+
             </td>
             </tr>`;
           clientTable.innerHTML += row;
@@ -107,7 +109,12 @@ function editClient(id) {
       'Authorization': `Bearer ${localStorage.getItem('token')}`
     }
   })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al obtener el cliente para editar.');
+      }
+      return response.json();
+    })
     .then(cliente => {
       Swal.fire({
         title: 'Editar cliente',
@@ -125,9 +132,9 @@ function editClient(id) {
             email: document.getElementById('swal-input2').value,
             phone: document.getElementById('swal-input3').value,
             address: document.getElementById('swal-input4').value,
-          }
+          };
         }
-      }).then((result) => {
+      }).then(result => {
         if (result.isConfirmed) {
           const updatedData = result.value;
           fetch(`http://localhost:8000/api/clients/${id}`, {
@@ -139,20 +146,28 @@ function editClient(id) {
             },
             body: JSON.stringify(updatedData)
           })
-            .then(response => response.json())
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Error al actualizar el cliente.');
+              }
+              return response.json();
+            })
             .then(data => {
               Swal.fire('Actualizado!', 'El cliente ha sido actualizado.', 'success');
-              fetchClients(); // Recargar clientes después de actualizar
+              fetchClients(); 
             })
             .catch(error => {
               console.error('Error al actualizar el cliente:', error);
               Swal.fire('Error', 'No se pudo actualizar el cliente.', 'error');
             });
         }
+      }).catch(error => {
+        console.error('Error al mostrar la ventana de edición:', error);
+        Swal.fire('Error', 'No se pudo editar el cliente.', 'error');
       });
     })
     .catch(error => {
-      console.error("Error al obtener el cliente para editar:", error);
+      console.error('Error al obtener el cliente para editar:', error);
       Swal.fire('Error', 'No se pudo obtener el cliente.', 'error');
     });
 }
@@ -194,3 +209,76 @@ function deleteClient(id) {
     }
   });
 }
+
+
+// Función para crear un cliente
+function createClient() {
+  Swal.fire({
+    title: 'Crear nuevo cliente',
+    html: `
+      <input id="swal-input-name" class="swal2-input" placeholder="Nombre" >
+      <input id="swal-input-email" class="swal2-input" placeholder="Email" >
+      <input id="swal-input-phone" class="swal2-input" placeholder="Teléfono" >
+      <input id="swal-input-address" class="swal2-input" placeholder="Dirección">
+    `,
+    focusConfirm: false,
+    showCancelButton: true,
+    preConfirm: () => {
+      return {
+        name: document.getElementById('swal-input-name').value,
+        email: document.getElementById('swal-input-email').value,
+        phone: document.getElementById('swal-input-phone').value,
+        address: document.getElementById('swal-input-address').value
+      };
+    }
+  }).then(result => {
+    if (result.isConfirmed) {
+      const newClient = result.value;
+      
+  fetch("http://localhost:8000/api/clients", {
+  method: "POST",
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`
+  },
+  body: JSON.stringify(newClient)
+})
+.then(response => response.json())
+.then(data => {
+  if (data.message === 'cliente registrado satisfactoriamente') {
+    Swal.fire('Creado!', 'El cliente ha sido creado exitosamente.', 'success');
+    fetchClients();  // Recargar la lista de clientes
+  } else {
+    Swal.fire('Error', 'Hubo un problema al crear el cliente.', 'error');
+  }
+})
+
+      .then(response => response.json())
+      .then(data => {
+        if (data.message === 'cliente registrado satisfactoriamente') {
+          Swal.fire('Creado!', 'El cliente ha sido creado exitosamente.', 'success');
+          fetchClients();  // Recargar la lista de clientes
+        } else {
+          Swal.fire('Error', 'Hubo un problema al crear el cliente.', 'error');
+        }
+      })
+      .catch(error => {
+  console.error('Error al crear el cliente:', error);
+  if (error.response) {
+    console.error('Detalles de la respuesta:', error.response);
+  } else if (error.request) {
+    console.error('Error en la solicitud:', error.request);
+  } else {
+    console.error('Error desconocido:', error.message);
+  }
+  Swal.fire('Error', 'No se pudo crear el cliente.', 'error');
+});
+
+    }
+  }).catch(error => {
+    console.error('Error al mostrar el formulario de creación:', error);
+    Swal.fire('Error', 'No se pudo mostrar el formulario de creación.', 'error');
+  });
+}
+

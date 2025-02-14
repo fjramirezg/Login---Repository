@@ -83,9 +83,10 @@ class UserController extends Controller
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Usuario al actualizar clienteMod'], 500);
+            return response()->json(['message' => 'Error al actualizar '], 500);
         }
     }
+
 
     public function destroy(string $user_id)
     {
@@ -110,4 +111,25 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    //prueba ------------------
+    public function getCurrentUserRole()
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Usuario no autenticado'
+            ], 401);
+        }
+
+        return response()->json([
+            'name' => $user->name,
+            'role' => $user->getRoleNames()->first(), // Obtiene el primer rol (admin o user)
+            'isAdmin' => $user->hasRole('admin'),
+            'isUser' => $user->hasRole('user')
+        ]);
+    }
+    //prueba ------------------
+
 }

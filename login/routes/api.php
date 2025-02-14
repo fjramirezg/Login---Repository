@@ -27,13 +27,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::middleware('role:admin')->group(function () {
             Route::put('/{client}', [ClienteController::class, 'update']);
             Route::delete('/{client}', [ClienteController::class, 'destroy']);
+            //prueba------------------
+            Route::get('/{rol}', [UserController::class, 'getCurrentUserRole']);
+            //prueba------------------
+
         });
     });
 
 //    Rutas para usuarios
     Route::resource('users', UserController::class)->middleware('role:admin');
-
-
 
 });
 

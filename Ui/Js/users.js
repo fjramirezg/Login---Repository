@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
   fetchUsers(); 
 });
 
-document.getElementById('search-form-users').addEventListener('submit-usuarios', function(e) {
+document.getElementById('search-form-users').addEventListener('submit', function(e) {
   e.preventDefault(); 
   searchUsers();  
 });
@@ -44,6 +44,8 @@ function fetchUsers(name = "") {
               <button onclick="viewUsers(${user.id})">Ver</button>
               <button onclick="editUser(${user.id})">Editar</button>
               <button onclick="deleteUser(${user.id})">Eliminar</button>
+              <button onclick="createUser(${user.id})">Crear Usuario</button>
+
             </td>
           </tr>`;
           userTable.innerHTML += row;
@@ -93,50 +95,79 @@ function viewUsers(id) {
     });
 }
 
-// Función para editar el usuario utilizando SweetAlert2
 function editUser(id) {
   fetch(`http://localhost:8000/api/users/${id}`, {
     headers: {
       'Accept': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}` 
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     }
   })
-  .then(response => response.json()) 
+  .then(response => response.json())
   .then(user => {
+    console.log(user);  // Verifica que los datos se están recibiendo correctamente
+    
     Swal.fire({
       title: 'Editar Usuario',
       html: `
-        <input id="swal-input1" class="swal2-input" placeholder="Username" value="${user.username}">
+        <input id="swal-input1" class="swal2-input" placeholder="Nombre" value="${user.username}"> <!-- Cambié 'user.name' por 'user.username' -->
         <input id="swal-input2" class="swal2-input" placeholder="Email" value="${user.email}">
+        <input id="swal-input3" type="password" class="swal2-input" placeholder="Nueva Contraseña">
+        <select id="swal-input4" class="swal2-input">
+          <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
+          <option value="user" ${user.role === 'user' ? 'selected' : ''}>User</option>
+        </select>
       `,
       focusConfirm: false,
-      showCancelButton: true, 
+      showCancelButton: true,
       preConfirm: () => {
-        return {
-          username: document.getElementById('swal-input1').value,
-          email: document.getElementById('swal-input2').value
+        const updatedData = {};
+
+        // Solo incluir campos que han sido modificados
+        const username = document.getElementById('swal-input1').value.trim();
+        const email = document.getElementById('swal-input2').value.trim();
+        const password = document.getElementById('swal-input3').value.trim();
+        const role = document.getElementById('swal-input4').value;
+
+        if (username && username !== user.username) updatedData.username = username; 
+        if (email && email !== user.email) updatedData.email = email;
+        if (password) updatedData.password = password;
+        if (role !== user.role) updatedData.role = role;
+
+        if (Object.keys(updatedData).length === 0) {
+          Swal.showValidationMessage('Debe modificar al menos un campo');
+          return false;
         }
+
+        return updatedData;
       }
     }).then((result) => {
-      if (result.isConfirmed) {
-        const updatedData = result.value;
+      if (result.isConfirmed && result.value) {
         fetch(`http://localhost:8000/api/users/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}` 
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
           },
-          body: JSON.stringify(updatedData)
+          body: JSON.stringify(result.value)
         })
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(error => Promise.reject(error));
+          }
+          return response.json();
+        })
         .then(data => {
-          Swal.fire('Actualizado!', 'El usuario ha sido actualizado.', 'success');
-          fetchUsers(); 
+          Swal.fire('¡Actualizado!', 'El usuario ha sido actualizado.', 'success');
+          fetchUsers(); // Recargar la lista de usuarios
         })
         .catch(error => {
           console.error('Error al actualizar el usuario:', error);
-          Swal.fire('Error', 'No se pudo actualizar el usuario.', 'error');
+          let errorMessage = 'No se pudo actualizar el usuario.';
+          if (error.message) {
+            errorMessage += ` ${error.message}`;
+          }
+          Swal.fire('Error', errorMessage, 'error');
         });
       }
     });
@@ -185,3 +216,71 @@ function deleteUser(id) {
     }
   });
 }
+
+// Función para crear un nuevo usuario
+function createUser() {
+  Swal.fire({
+    title: 'Crear Usuario',
+    html: `
+      <input id="swal-input-name" class="swal2-input" placeholder="Nombre">
+      <input id="swal-input-email" class="swal2-input" placeholder="Email">
+      <input id="swal-input-password" type="password" class="swal2-input" placeholder="Contraseña">
+      <select id="swal-input-role" class="swal2-input">
+        <option value="admin">Admin</option>
+        <option value="user" selected>User</option>
+      </select>
+    `,
+    focusConfirm: false,
+    showCancelButton: true,
+    confirmButtonText: 'Crear',
+    cancelButtonText: 'Cancelar',
+    preConfirm: () => {
+      const name = document.getElementById('swal-input-name').value.trim();
+      const email = document.getElementById('swal-input-email').value.trim();
+      const password = document.getElementById('swal-input-password').value.trim();
+      const role = document.getElementById('swal-input-role').value;
+      
+      if (!name || !email || !password) {
+        Swal.showValidationMessage('Por favor, completa todos los campos requeridos.');
+        return false; 
+      }
+      
+      return { name, email, password, role };
+    }
+  }).then((result) => {
+    if (result.isConfirmed && result.value) {
+      fetch('http://localhost:8000/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(result.value)
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => Promise.reject(err));
+        }
+        return response.json();
+      })
+      .then(data => {
+        Swal.fire(
+          '¡Creado!',
+          'El usuario se creó satisfactoriamente.',
+          'success'
+        );
+        fetchUsers();
+      })
+      .catch(error => {
+        console.error('Error al crear el usuario:', error);
+        let errorMessage = 'No se pudo crear el usuario.';
+        if (error.message) {
+          errorMessage += ` ${error.message}`;
+        }
+        Swal.fire('Error', errorMessage, 'error');
+      });
+    }
+  });
+}
+
