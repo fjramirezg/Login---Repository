@@ -44,8 +44,6 @@ function fetchUsers(name = "") {
               <button onclick="viewUsers(${user.id})">Ver</button>
               <button onclick="editUser(${user.id})">Editar</button>
               <button onclick="deleteUser(${user.id})">Eliminar</button>
-              <button onclick="createUser(${user.id})">Crear Usuario</button>
-
             </td>
           </tr>`;
           userTable.innerHTML += row;
@@ -104,12 +102,10 @@ function editUser(id) {
   })
   .then(response => response.json())
   .then(user => {
-    console.log(user);  // Verifica que los datos se están recibiendo correctamente
-    
     Swal.fire({
       title: 'Editar Usuario',
       html: `
-        <input id="swal-input1" class="swal2-input" placeholder="Nombre" value="${user.username}"> <!-- Cambié 'user.name' por 'user.username' -->
+        <input id="swal-input1" class="swal2-input" placeholder="Nombre" value="${user.username}">
         <input id="swal-input2" class="swal2-input" placeholder="Email" value="${user.email}">
         <input id="swal-input3" type="password" class="swal2-input" placeholder="Nueva Contraseña">
         <select id="swal-input4" class="swal2-input">
@@ -120,25 +116,17 @@ function editUser(id) {
       focusConfirm: false,
       showCancelButton: true,
       preConfirm: () => {
-        const updatedData = {};
-
-        // Solo incluir campos que han sido modificados
         const username = document.getElementById('swal-input1').value.trim();
-        const email = document.getElementById('swal-input2').value.trim();
+        const email    = document.getElementById('swal-input2').value.trim();
         const password = document.getElementById('swal-input3').value.trim();
-        const role = document.getElementById('swal-input4').value;
+        const role     = document.getElementById('swal-input4').value;
 
-        if (username && username !== user.username) updatedData.username = username; 
-        if (email && email !== user.email) updatedData.email = email;
-        if (password) updatedData.password = password;
-        if (role !== user.role) updatedData.role = role;
-
-        if (Object.keys(updatedData).length === 0) {
-          Swal.showValidationMessage('Debe modificar al menos un campo');
+        if (!username || !email || !role) {
+          Swal.showValidationMessage('Todos los campos requeridos deben ser completados.');
           return false;
         }
-
-        return updatedData;
+        // Siempre enviar el role, aunque no se haya cambiado
+        return { username, email, password, role };
       }
     }).then((result) => {
       if (result.isConfirmed && result.value) {
@@ -159,7 +147,7 @@ function editUser(id) {
         })
         .then(data => {
           Swal.fire('¡Actualizado!', 'El usuario ha sido actualizado.', 'success');
-          fetchUsers(); // Recargar la lista de usuarios
+          fetchUsers(); 
         })
         .catch(error => {
           console.error('Error al actualizar el usuario:', error);
@@ -177,6 +165,7 @@ function editUser(id) {
     Swal.fire('Error', 'No se pudo obtener el usuario.', 'error');
   });
 }
+
 
 // Función para eliminar un usuario utilizando SweetAlert2
 function deleteUser(id) {
@@ -222,7 +211,7 @@ function createUser() {
   Swal.fire({
     title: 'Crear Usuario',
     html: `
-      <input id="swal-input-name" class="swal2-input" placeholder="Nombre">
+      <input id="swal-input-name" class="swal2-input" placeholder="Nombre de usuario">
       <input id="swal-input-email" class="swal2-input" placeholder="Email">
       <input id="swal-input-password" type="password" class="swal2-input" placeholder="Contraseña">
       <select id="swal-input-role" class="swal2-input">
@@ -235,17 +224,17 @@ function createUser() {
     confirmButtonText: 'Crear',
     cancelButtonText: 'Cancelar',
     preConfirm: () => {
-      const name = document.getElementById('swal-input-name').value.trim();
-      const email = document.getElementById('swal-input-email').value.trim();
+      const username = document.getElementById('swal-input-name').value.trim();
+      const email    = document.getElementById('swal-input-email').value.trim();
       const password = document.getElementById('swal-input-password').value.trim();
-      const role = document.getElementById('swal-input-role').value;
+      const role     = document.getElementById('swal-input-role').value;
       
-      if (!name || !email || !password) {
+      if (!username || !email || !password || !role) {
         Swal.showValidationMessage('Por favor, completa todos los campos requeridos.');
         return false; 
       }
       
-      return { name, email, password, role };
+      return { username, email, password, role };
     }
   }).then((result) => {
     if (result.isConfirmed && result.value) {
@@ -265,11 +254,7 @@ function createUser() {
         return response.json();
       })
       .then(data => {
-        Swal.fire(
-          '¡Creado!',
-          'El usuario se creó satisfactoriamente.',
-          'success'
-        );
+        Swal.fire('¡Creado!', 'El usuario se creó satisfactoriamente.', 'success');
         fetchUsers();
       })
       .catch(error => {

@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClienteMod extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = ['user_id', 'name', 'email', 'phone', 'address'];
     protected $table = 'clientes';
+    protected $dates = ['deleted_at'];
 
 
     // Relacion HasMany - Muchos clientes tienen un usuario

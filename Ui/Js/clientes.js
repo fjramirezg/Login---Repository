@@ -1,21 +1,25 @@
+// =======================
+// Funciones para Clientes
+// =======================
+
+// Verifica si hay un token de autenticación
 document.addEventListener("DOMContentLoaded", function() {
   const token = localStorage.getItem('token');
-
   if (!token) {
     window.location.href = 'login.html';
     return; 
   }
-
   console.log('Sesión válida. Cargando clientes...');
   fetchClients(); 
 });
 
+// Intercepta el evento de envío del formulario 
 document.getElementById('search-form-clientes').addEventListener('submit', function(e) {
   e.preventDefault();
   searchClient();  
 });
 
-// Función para obtener y mostrar los clientes
+// Realiza la petición fetch al servidor para obtener los datos de los clientes.
 function fetchClients(name = "") {
   let url = "http://localhost:8000/api/clients";
   if (name) {
@@ -36,24 +40,24 @@ function fetchClients(name = "") {
       
       if (Array.isArray(data) && data.length > 0) {
         console.log("Datos de clientes:", data);
-        
-        data.forEach(client => {
-          let row = `<tr>
-            <td>${client.id}</td>
-            <td>${client.name}</td>
-            <td>${client.email}</td>
-            <td>${client.phone}</td>
-            <td>${client.address}</td>
-            <td>
-              <button onclick="viewClient(${client.id})">Ver</button>
-              <button onclick="editClient(${client.id})">Editar</button>
-              <button onclick="deleteClient(${client.id})">Eliminar</button>
-              <button onclick="createClient()">Crear Cliente</button>
-
-            </td>
-            </tr>`;
-          clientTable.innerHTML += row;
-        });
+      
+    data.forEach(client => {
+    let row = `<tr>
+        <td>${client.id}</td>
+        <td>${client.name}</td>
+        <td>${client.email}</td>
+        <td>${client.phone}</td>
+        <td>${client.address}</td>
+        <td>
+        <div class="action-buttons">
+            <button class="btn-view" onclick="viewClient(${client.id})">Ver</button>
+            <button class="btn-edit" onclick="editClient(${client.id})">Editar</button>
+            <button class="btn-delete" onclick="deleteClient(${client.id})">Eliminar</button>
+        </div>
+        </td>
+    </tr>`;
+    clientTable.innerHTML += row;
+    });
       } else {
         console.log("No se encontraron clientes.");
         alert(`No se encontraron clientes con el nombre: ${name}`);
@@ -65,6 +69,7 @@ function fetchClients(name = "") {
     });
 }
 
+// Obtiene el nombre ingresado en el formulario de búsqueda
 function searchClient() {
   const name = document.getElementById("name-clientes").value.trim();
   if (!name) {
@@ -74,6 +79,7 @@ function searchClient() {
   fetchClients(name);
 }
 
+// Obtiene los detalles de un cliente específico
 function viewClient(id) {
   fetch(`http://localhost:8000/api/clients/${id}`, {
     headers: {
@@ -102,6 +108,7 @@ function viewClient(id) {
     });
 }
 
+// Obtiene los datos de un cliente específico para permitir su edición
 function editClient(id) {
   fetch(`http://localhost:8000/api/clients/${id}`, {
     headers: {
@@ -128,10 +135,10 @@ function editClient(id) {
         showCancelButton: true,
         preConfirm: () => {
           return {
-            name: document.getElementById('swal-input1').value,
-            email: document.getElementById('swal-input2').value,
-            phone: document.getElementById('swal-input3').value,
-            address: document.getElementById('swal-input4').value,
+            name: document.getElementById('swal-input1').value.trim(),
+            email: document.getElementById('swal-input2').value.trim(),
+            phone: document.getElementById('swal-input3').value.trim(),
+            address: document.getElementById('swal-input4').value.trim(),
           };
         }
       }).then(result => {
@@ -172,6 +179,7 @@ function editClient(id) {
     });
 }
 
+// Función para eliminar un cliente
 function deleteClient(id) {
   Swal.fire({
     title: '¿Estás seguro?',
@@ -192,11 +200,7 @@ function deleteClient(id) {
       })
         .then(response => {
           if (response.ok) {
-            Swal.fire(
-              'Eliminado!',
-              'El cliente ha sido eliminado.',
-              'success'
-            );
+            Swal.fire('Eliminado!', 'El cliente ha sido eliminado.', 'success');
             fetchClients(); // Recargar clientes después de eliminar
           } else {
             throw new Error('Error en la eliminación');
@@ -210,51 +214,51 @@ function deleteClient(id) {
   });
 }
 
-
-// Función para crear un cliente
+// Función para agregar cliente nuevo
 function createClient() {
   Swal.fire({
     title: 'Crear nuevo cliente',
     html: `
-      <input id="swal-input-name" class="swal2-input" placeholder="Nombre" >
-      <input id="swal-input-email" class="swal2-input" placeholder="Email" >
-      <input id="swal-input-phone" class="swal2-input" placeholder="Teléfono" >
+      <input id="swal-input-name" class="swal2-input" placeholder="Nombre">
+      <input id="swal-input-email" class="swal2-input" placeholder="Email">
+      <input id="swal-input-phone" class="swal2-input" placeholder="Teléfono">
       <input id="swal-input-address" class="swal2-input" placeholder="Dirección">
     `,
     focusConfirm: false,
     showCancelButton: true,
+    confirmButtonText: 'Crear',
+    cancelButtonText: 'Cancelar',
     preConfirm: () => {
-      return {
-        name: document.getElementById('swal-input-name').value,
-        email: document.getElementById('swal-input-email').value,
-        phone: document.getElementById('swal-input-phone').value,
-        address: document.getElementById('swal-input-address').value
-      };
+      const name = document.getElementById('swal-input-name').value.trim();
+      const email = document.getElementById('swal-input-email').value.trim();
+      const phone = document.getElementById('swal-input-phone').value.trim();
+      const address = document.getElementById('swal-input-address').value.trim();
+      
+      if (!name || !email || !phone || !address) {
+        Swal.showValidationMessage('Por favor, completa todos los campos requeridos.');
+        return false;
+      }
+      
+      return { name, email, phone, address };
     }
   }).then(result => {
-    if (result.isConfirmed) {
+    if (result.isConfirmed && result.value) {
       const newClient = result.value;
-      
-  fetch("http://localhost:8000/api/clients", {
-  method: "POST",
-  headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('token')}`
-  },
-  body: JSON.stringify(newClient)
-})
-.then(response => response.json())
-.then(data => {
-  if (data.message === 'cliente registrado satisfactoriamente') {
-    Swal.fire('Creado!', 'El cliente ha sido creado exitosamente.', 'success');
-    fetchClients();  // Recargar la lista de clientes
-  } else {
-    Swal.fire('Error', 'Hubo un problema al crear el cliente.', 'error');
-  }
-})
-
-      .then(response => response.json())
+      fetch("http://localhost:8000/api/clients", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(newClient)
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => Promise.reject(err));
+        }
+        return response.json();
+      })
       .then(data => {
         if (data.message === 'cliente registrado satisfactoriamente') {
           Swal.fire('Creado!', 'El cliente ha sido creado exitosamente.', 'success');
@@ -264,21 +268,12 @@ function createClient() {
         }
       })
       .catch(error => {
-  console.error('Error al crear el cliente:', error);
-  if (error.response) {
-    console.error('Detalles de la respuesta:', error.response);
-  } else if (error.request) {
-    console.error('Error en la solicitud:', error.request);
-  } else {
-    console.error('Error desconocido:', error.message);
-  }
-  Swal.fire('Error', 'No se pudo crear el cliente.', 'error');
-});
-
+        console.error('Error al crear el cliente:', error);
+        Swal.fire('Error', 'No se pudo crear el cliente.', 'error');
+      });
     }
   }).catch(error => {
     console.error('Error al mostrar el formulario de creación:', error);
     Swal.fire('Error', 'No se pudo mostrar el formulario de creación.', 'error');
   });
 }
-

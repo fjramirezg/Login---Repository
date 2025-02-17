@@ -8,7 +8,9 @@ use App\Models\UserMod;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\validation\Rule;
 
 class ClienteController
 {
@@ -21,7 +23,7 @@ class ClienteController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
+//           'user_id' => 'required|exists:users,id',
             'name' => 'required|string',
             'email' => 'required|email|unique:clientes,email',
             'phone' => 'required|string',
@@ -33,12 +35,13 @@ class ClienteController
         }
 
         $user = ClienteMod::create([
-            'user_id' => $request ->user_id,
+            'user_id' => $request ->user()->id,
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
             'address' => $request ->address
         ]);
+        $user->syncRoles([$request->role]);
 
         return response()->json(['message' => 'cliente registrado satisfactoriamente'], 201);
     }
@@ -56,11 +59,12 @@ class ClienteController
     public function update(Request $request, string $user_id)
     {
         try {
+
             // Validación de datos
             $request->validate([
-                'user_id' => 'required|exists:users,id',
+//              'user_id' => 'required|exists:users,id',
                 'name' => 'required|string',
-                'email' => 'required|email|unique:clientes,email',
+                'email' => ['required','email', Rule::unique('clientes', 'email')->ignore($user_id)],
                 'phone' => 'required|string',
                 'address'=> 'nullable|string',
             ]);
@@ -70,7 +74,7 @@ class ClienteController
 
             // Actualizar los datos
             $cliente->update([
-                'user_id' => $request ->user_id,
+//              'user_id' => $request ->user_id,
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,

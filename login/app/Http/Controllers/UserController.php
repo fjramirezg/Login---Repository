@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\validation\Rule;
 
 class UserController extends Controller
 {
@@ -18,7 +19,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
+            'username' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string',
             'role' => 'required|string|in:admin,user'
@@ -30,7 +31,7 @@ class UserController extends Controller
         }
 
         $user = UserMod::create([
-            'name' => $request->name,
+            'username' => $request->username,//user
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
@@ -50,47 +51,62 @@ class UserController extends Controller
         }
     }
 
+
     public function update(Request $request, string $user_id)
     {
         try {
-            // Validación de datos
-            $request->validate([
-                'name' => 'required|string',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|string',
-                'role' => 'required|string|in:admin,user'
+            // Usar la propiedad id
+            $esMiUsuario = $request->user()->id == $user_id;
 
+            $request->validate([
+                'username' => 'required|string',
+                'email'    => ['required', 'email', Rule::unique('users', 'email')->ignore($user_id)],
+                'password' => 'nullable|string',
+                'role'     => 'required|string|in:admin,user'
             ]);
 
-            // Buscar el clienteMod
             $usuario = UserMod::findOrFail($user_id);
 
-            // Actualizar los datos
-            $usuario->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
+            $datosActualizar = [
+                'username' => $request->username,
+                'email'    => $request->email,
+            ];
 
-            ]);
+            if ($request->filled('password')) {
+                $datosActualizar['password'] = Hash::make($request->password);
+            }
 
-            $usuario->syncRoles([$request->role]);
+            $usuario->update($datosActualizar);
 
-            // Retornar respuesta
+            // Si no es el mismo usuario, se actualiza el rol
+            if (!$esMiUsuario) {
+                $usuario->syncRoles([$request->role]);
+            }
+
             return response()->json([
-                'message' => 'Usuario actualizado con éxito',
-                'usuario' => $usuario
+                'message'      => 'Usuario actualizado con éxito',
+                'usuario'      => $usuario,
+                'rol_cambiado' => !$esMiUsuario,
             ], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error al actualizar '], 500);
+            return response()->json(['message' => 'Error al actualizar'], 500);
         }
     }
 
 
-    public function destroy(string $user_id)
+
+    public function destroy (Request $request, string $user_id)
     {
         try {
+            if ($request->user()->id() == $user_id) {
+                return response()->json([
+                    'message' => 'No puede eliminar este usuario'],
+                    404);
+
+            }
+
             // Buscar el clienteMod
             $usuario = UserMod::findOrFail($user_id);
 
@@ -111,6 +127,8 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+
 
     //prueba ------------------
     public function getCurrentUserRole()
