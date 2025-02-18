@@ -1,0 +1,87 @@
+/* Definición de variables */
+:root {
+  --bgc-light: #f4f4f4;
+  --bgc-dark: #121212;
+  --bgc-ligth-white: #f9f9f9;
+  --bgc_green: #0ab43a;
+  --bgc_hoover_ligth_gray: #686e69;
+  --bx-shadow-dark: rgba(0, 0, 0, 0.1);
+  --bx-shadow-light: rgba(40, 167, 69, 0.5);
+  --light_gray: #555;
+  --light_gray2: #bbb9b9;
+  --gray-color: #333;
+  --green-color: #28a745;
+}
+
+/* Estilos generales */
+body {
+  font-family: Arial, sans-serif;
+  background-color: var(--bgc-light);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Contenedor del formulario */
+.form-login-box {
+  background-color: var(--bgc-ligth-white);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px var(--bx-shadow-dark);
+}
+
+/* Título del formulario */
+.form-login-box h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: var(--gray-color);
+}
+
+/* Estilos para las etiquetas */
+.form-login-box label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: var(--light_gray);
+}
+
+/* Estilos para los campos de entrada */
+.form-login-box input[type="email"],
+.form-login-box input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid var(--light_gray2);
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+/* Estilos para el botón */
+.form-login-box button {
+  width: 80%;
+  padding: 10px;
+  background-color: var(--bgc_green);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 0 auto;
+  display: block;
+}
+
+.form-login-box button:hover {
+  background-color: var(--bgc_hoover_ligth_gray);
+}
+
+/* Estilos para el enfoque (focus) de los campos */
+.form-login-box input:focus {
+  border-color: var(--green-color);
+  outline: none;
+  box-shadow: 0 0 5px var(--bx-shadow-light);
+}
